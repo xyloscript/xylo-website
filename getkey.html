@@ -54,6 +54,7 @@
   .task-item.completed { border-color: rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05); cursor: default; }
   .task-item.completed:hover { transform: none; }
   .task-item.cooldown { opacity: 0.6; cursor: not-allowed; }
+  .task-item.cooldown:hover { transform: none; }
   
   .task-icon { 
     width: 36px; height: 36px; background: rgba(59, 130, 246, 0.1); border-radius: 10px; 
@@ -127,7 +128,7 @@
   </div>
 
   <div class="task-list">
-    <div class="task-item" id="task-1" onclick="startTask(1, 'https://www.tiktok.com/@xylo_xi', 50)">
+    <div class="task-item" id="task-1" onclick="startTask(1, 'https://www.tiktok.com/@xylo_xi', 30)">
       <div class="task-icon">👤</div>
       <div class="task-info">
         <div class="task-title">Follow on TikTok</div>
@@ -137,7 +138,7 @@
       <div class="task-timer" id="timer-1"></div>
     </div>
 
-    <div class="task-item" id="task-2" onclick="startTask(2, 'https://vt.tiktok.com/ZSgxPaXwo/', 45)">
+    <div class="task-item" id="task-2" onclick="startTask(2, 'https://vt.tiktok.com/ZSgxPaXwo/', 40)">
       <div class="task-icon">❤️</div>
       <div class="task-info">
         <div class="task-title">Like & Repost Video</div>
@@ -147,7 +148,7 @@
       <div class="task-timer" id="timer-2"></div>
     </div>
 
-    <div class="task-item" id="task-3" onclick="startTask(3, 'https://vt.tiktok.com/ZSgxPm389/', 40)">
+    <div class="task-item" id="task-3" onclick="startTask(3, 'https://vt.tiktok.com/ZSgxPm389/', 30)">
       <div class="task-icon">📢</div>
       <div class="task-info">
         <div class="task-title">Like & Repost Video 2</div>
@@ -157,7 +158,7 @@
       <div class="task-timer" id="timer-3"></div>
     </div>
 
-    <div class="task-item" id="task-4" onclick="startTask(4, 'https://discord.gg/xgKKRfuMf', 35)">
+    <div class="task-item" id="task-4" onclick="startTask(4, 'https://discord.gg/xgKKRfuMf', 30)">
       <div class="task-icon">💬</div>
       <div class="task-info">
         <div class="task-title">Join Our Discord</div>
@@ -224,14 +225,9 @@
 
 <script>
   let tasksDone = { 1: false, 2: false, 3: false, 4: false, 5: false };
-  let isVerifying = false;
-  let verifyStartTime = 0;
-  let activeTaskId = 0;
+  let taskTimers = { 1: null, 2: null, 3: null, 4: null };
   let currentKey = "";
   let expiryTime = 0;
-  
-  // Timers storage para sa bawat task
-  let taskTimers = { 1: null, 2: null, 3: null, 4: null };
 
   let keysDB = JSON.parse(localStorage.getItem('xylo_keys_final') || '[]');
   function saveDB() { localStorage.setItem('xylo_keys_final', JSON.stringify(keysDB)); }
@@ -262,7 +258,6 @@
     
     window.open(link, '_blank');
     
-    // Start Timer
     let timeLeft = duration;
     const el = document.getElementById('task-' + id);
     const desc = el.querySelector('.task-desc');
