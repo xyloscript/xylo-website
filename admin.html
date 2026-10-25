@@ -15,6 +15,26 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 14px; min-height: 100vh; display: flex; }
   
+  /* LOGIN SCREEN */
+  #login-screen {
+    position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 999;
+  }
+  .login-box {
+    background: var(--bg2); border: 1px solid var(--border2); padding: 30px; border-radius: 12px;
+    width: 100%; max-width: 380px; text-align: center;
+  }
+  .login-box .logo-text { font-family: var(--font-mono); font-size: 24px; font-weight: 700; color: var(--acc); }
+  .login-box .logo-sub { font-family: var(--font-sans); font-size: 12px; color: var(--fg3); display: block; text-transform: uppercase; margin-top: 4px; margin-bottom: 24px; }
+  .login-box input {
+    width: 100%; padding: 12px; background: var(--bg3); border: 1px solid var(--border); 
+    color: var(--fg); border-radius: 7px; margin-bottom: 12px; outline: none; font-family: var(--font-sans);
+  }
+  .login-box input:focus { border-color: var(--acc); }
+  .login-box button { width: 100%; padding: 12px; margin-top: 10px; }
+
+  /* MAIN APP */
+  #app { display: none; width: 100%; }
+  
   .sidebar { width: 220px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; }
   .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
   .logo-text { font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--acc); }
@@ -22,6 +42,8 @@
   .nav-item { display: block; padding: 10px 20px; cursor: pointer; color: var(--fg2); border-left: 2px solid transparent; transition: 0.15s; }
   .nav-item:hover { background: var(--bg3); color: var(--fg); }
   .nav-item.active { background: rgba(224,32,32,0.06); color: var(--acc); border-left-color: var(--acc); }
+  .logout-btn { margin-top: auto; margin-bottom: 10px; border: 1px solid var(--border); background: transparent; color: var(--fg2); padding: 8px 16px; border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 600; margin-left: 15px; margin-right: 15px; transition: 0.15s; }
+  .logout-btn:hover { background: var(--acc); color: #fff; border-color: var(--acc); }
 
   .main { flex: 1; padding: 30px; overflow-y: auto; }
   .page { display: none; }
@@ -62,6 +84,22 @@
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo-text">XYLO</div>
+    <div class="logo-sub">Admin Authentication</div>
+    
+    <input type="password" id="login-pass" placeholder="Enter Password" autocomplete="off">
+    <input type="password" id="login-confirm" placeholder="Confirm Password" autocomplete="off" style="display: none;">
+    
+    <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Login</button>
+    <button class="btn btn-ghost" id="login-back-btn" onclick="resetLogin()" style="display: none; margin-top: 8px;">Back to Login</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
   <div class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-text">XYLO</div>
@@ -72,6 +110,7 @@
     <div class="nav-item" onclick="nav('scripts', this)">Scripts</div>
     <div class="nav-item" onclick="nav('loader', this)">Loader</div>
     <div class="nav-item" onclick="nav('settings', this)">Settings</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
   <div class="main">
@@ -192,7 +231,78 @@
   </div>
 
   <script>
-    // DATA MANAGEMENT
+    // ==========================================
+    // AUTHENTICATION SYSTEM
+    // ==========================================
+    let isSetupMode = false;
+
+    function checkAuth() {
+      const savedPass = localStorage.getItem('xylo_admin_pass');
+      const loginScreen = document.getElementById('login-screen');
+      const app = document.getElementById('app');
+      
+      if (savedPass) {
+        // May saved password na, kailangan mag-login
+        loginScreen.style.display = 'flex';
+        app.style.display = 'none';
+        isSetupMode = false;
+        document.getElementById('login-confirm').style.display = 'none';
+        document.getElementById('login-back-btn').style.display = 'none';
+        document.getElementById('login-btn').innerText = "Login";
+        document.querySelector('.logo-sub').innerText = "Admin Authentication";
+      } else {
+        // Wala pang password, kailangan mag-setup
+        loginScreen.style.display = 'flex';
+        app.style.display = 'none';
+        isSetupMode = true;
+        document.getElementById('login-confirm').style.display = 'block';
+        document.getElementById('login-back-btn').style.display = 'none';
+        document.getElementById('login-btn').innerText = "Create Password";
+        document.querySelector('.logo-sub').innerText = "Create Admin Password";
+      }
+    }
+
+    function handleLogin() {
+      const pass = document.getElementById('login-pass').value;
+      const confirm = document.getElementById('login-confirm').value;
+      
+      if (!pass) { alert("Please enter a password."); return; }
+      
+      if (isSetupMode) {
+        // Setup Mode
+        if (pass.length < 4) { alert("Password must be at least 4 characters."); return; }
+        if (pass !== confirm) { alert("Passwords do not match!"); return; }
+        
+        localStorage.setItem('xylo_admin_pass', pass);
+        alert("Password created successfully! You can now login.");
+        checkAuth();
+      } else {
+        // Login Mode
+        const savedPass = localStorage.getItem('xylo_admin_pass');
+        if (pass === savedPass) {
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('app').style.display = 'flex';
+          document.getElementById('login-pass').value = '';
+        } else {
+          alert("Incorrect password!");
+          document.getElementById('login-pass').value = '';
+        }
+      }
+    }
+
+    function logout() {
+      if(confirm("Are you sure you want to logout?")) {
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-confirm').value = '';
+        checkAuth();
+      }
+    }
+
+    // ==========================================
+    // MAIN APP LOGIC
+    // ==========================================
     let keys = JSON.parse(localStorage.getItem('xylo_keys_final') || '[]');
     let scripts = JSON.parse(localStorage.getItem('xylo_scripts') || '[]');
 
@@ -242,7 +352,6 @@
         return;
       }
       
-      // Render sa Keys Tab
       tbody.innerHTML = keys.map((k, i) => {
         const status = getExpiryStatus(k.expiry);
         const statusBadge = status.isExpired 
@@ -263,7 +372,6 @@
         `;
       }).join('');
 
-      // Render sa Dashboard (Recent 5)
       const recent = [...keys].reverse().slice(0, 5);
       dashTbody.innerHTML = recent.map(k => {
         const status = getExpiryStatus(k.expiry);
@@ -315,7 +423,6 @@
       renderKeys();
       closeModal('modal-key');
       
-      // Reset inputs
       document.getElementById('maxUses').value = 0;
       document.getElementById('expiryDuration').value = 'lifetime';
     }
@@ -405,6 +512,7 @@ loadstring(game:HttpGet(SCRIPT_URL, true))()
     }
 
     // INIT
+    checkAuth();
     renderKeys();
     renderScripts();
   </script>
