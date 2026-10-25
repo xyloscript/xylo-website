@@ -1,241 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XYLO | Get Free Key</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<style>
-  :root {
-    --bg: #030305; --bg2: rgba(15, 15, 20, 0.7); --border: rgba(255, 255, 255, 0.08);
-    --fg: #ffffff; --fg2: #a1a1aa; --blue: #3b82f6; --blue-hover: #2563eb;
-    --green: #22c55e; --purple: #8b5cf6; --discord: #5865F2;
-    --font-sans: 'Inter', sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { 
-    background-color: var(--bg); color: var(--fg); font-family: var(--font-sans); 
-    display: flex; align-items: center; justify-content: center; min-height: 100vh; 
-    background-image: 
-      radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
-    background-attachment: fixed; padding: 20px;
-  }
-  
-  .container { 
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; 
-    padding: 30px; width: 100%; max-width: 440px; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1); 
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    position: relative; overflow: hidden; 
-  }
-
-  .container::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--blue), var(--purple), transparent);
-  }
-  
-  .header { text-align: center; margin-bottom: 25px; }
-  .header h2 { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
-  .header p { font-size: 13px; color: var(--fg2); }
-  .header .count { 
-    display: inline-block; color: var(--blue); font-weight: 700; font-size: 12px; margin-top: 10px; 
-    background: rgba(59, 130, 246, 0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(59, 130, 246, 0.2);
-  }
-
-  .task-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
-  .task-item { 
-    background: rgba(25, 25, 30, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); 
-    border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; 
-    justify-content: space-between; cursor: pointer; transition: all 0.2s ease; 
-  }
-  .task-item:hover { background: rgba(35, 35, 45, 0.8); border-color: rgba(255, 255, 255, 0.15); transform: translateY(-2px); }
-  .task-item.completed { border-color: rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05); cursor: default; }
-  .task-item.completed:hover { transform: none; }
-  .task-item.cooldown { opacity: 0.6; cursor: not-allowed; }
-  .task-item.cooldown:hover { transform: none; }
-  
-  .task-icon { 
-    width: 36px; height: 36px; background: rgba(59, 130, 246, 0.1); border-radius: 10px; 
-    display: flex; align-items: center; justify-content: center; color: var(--blue); margin-right: 14px; font-size: 18px;
-  }
-  .task-item.completed .task-icon { background: rgba(34, 197, 94, 0.1); color: var(--green); }
-  
-  .task-info { flex: 1; }
-  .task-title { font-size: 14px; font-weight: 700; text-transform: uppercase; }
-  .task-desc { font-size: 12px; color: var(--fg2); margin-top: 3px; }
-  .task-item.completed .task-desc { color: var(--green); font-weight: 500; }
-  
-  .task-arrow { color: var(--fg2); font-size: 18px; font-weight: bold; }
-  .task-item.completed .task-arrow { display: none; }
-  .task-timer { color: var(--blue); font-weight: 800; font-size: 14px; margin-left: 10px; display: none; }
-
-  .btn { 
-    width: 100%; padding: 15px; background: var(--blue); color: #fff; border: none; 
-    border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; 
-    transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; 
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .btn:hover { background: var(--blue-hover); transform: translateY(-2px); }
-  .btn:disabled { background: rgba(255, 255, 255, 0.05); color: #6b7280; cursor: not-allowed; transform: none; }
-  .btn-green { background: var(--green); color: #000; }
-  .btn-green:hover { background: #16a34a; }
-
-  .modal-overlay { 
-    position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; 
-    align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(5px); 
-  }
-  .modal-overlay.active { display: flex; }
-  .modal { 
-    background: #0f1218; border: 1px solid var(--border); border-radius: 16px; 
-    padding: 30px; width: 100%; max-width: 380px; text-align: center; position: relative;
-  }
-  .modal-close { 
-    position: absolute; top: 15px; right: 15px; background: transparent; border: none; 
-    color: var(--fg2); font-size: 20px; cursor: pointer; 
-  }
-  .modal-icon { font-size: 40px; margin-bottom: 15px; }
-  .modal h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
-  .modal p { font-size: 13px; color: var(--fg2); margin-bottom: 25px; line-height: 1.6; }
-  
-  .cf-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .cf-left { display: flex; align-items: center; gap: 12px; }
-  .cf-checkbox { width: 24px; height: 24px; border: 2px solid #c1c1c1; border-radius: 3px; display: flex; align-items: center; justify-content: center; position: relative; }
-  .cf-spinner { width: 20px; height: 20px; border: 2px solid #e0e0e0; border-top-color: #f38020; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .cf-checkmark { color: #22c55e; font-size: 18px; display: none; }
-  .cf-text { font-size: 14px; color: #232323; font-weight: 400; }
-  .cf-right { display: flex; flex-direction: column; align-items: flex-end; }
-  .cf-logo { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
-  .cf-links { font-size: 9px; color: #888; margin-top: 2px; }
-
-  .key-box { 
-    display: none; margin-top: 20px; padding: 20px; background: rgba(34, 197, 94, 0.08); 
-    border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; text-align: center; 
-  }
-  .key-text { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--green); letter-spacing: 1.5px; margin: 10px 0; }
-  .timer { font-size: 12px; color: var(--fg2); margin-top: 12px; display: inline-block; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 20px; }
-</style>
-</head>
-<body>
-
-<div class="container">
-  <div class="header">
-    <h2>Complete Tasks to Continue</h2>
-    <p>Unlock your 5-Hour Free Key</p>
-    <span class="count" id="taskCount">Completed 0 of 5</span>
-  </div>
-
-  <div class="task-list">
-    <!-- 50 SECONDS -->
-    <div class="task-item" id="task-1" onclick="startTask(1, 'https://www.tiktok.com/@xylo_xi', 50)">
-      <div class="task-icon">👤</div>
-      <div class="task-info">
-        <div class="task-title">Follow on TikTok</div>
-        <div class="task-desc">Follow @xylo_xi on TikTok</div>
-      </div>
-      <div class="task-arrow">→</div>
-      <div class="task-timer" id="timer-1"></div>
-    </div>
-
-    <!-- 40 SECONDS -->
-    <div class="task-item" id="task-2" onclick="startTask(2, 'https://vt.tiktok.com/ZSgxPaXwo/', 40)">
-      <div class="task-icon">❤️</div>
-      <div class="task-info">
-        <div class="task-title">Like & Repost Video</div>
-        <div class="task-desc">Like, Repost, and Comment "W"</div>
-      </div>
-      <div class="task-arrow">→</div>
-      <div class="task-timer" id="timer-2"></div>
-    </div>
-
-    <!-- 30 SECONDS -->
-    <div class="task-item" id="task-3" onclick="startTask(3, 'https://vt.tiktok.com/ZSgxPm389/', 30)">
-      <div class="task-icon">📢</div>
-      <div class="task-info">
-        <div class="task-title">Like & Repost Video 2</div>
-        <div class="task-desc">Like, Repost, and Comment "W"</div>
-      </div>
-      <div class="task-arrow">→</div>
-      <div class="task-timer" id="timer-3"></div>
-    </div>
-
-    <!-- 30 SECONDS -->
-    <div class="task-item" id="task-4" onclick="startTask(4, 'https://discord.gg/xgKKRfuMf', 30)">
-      <div class="task-icon">💬</div>
-      <div class="task-info">
-        <div class="task-title">Join Our Discord</div>
-        <div class="task-desc">Join the server for updates & support</div>
-      </div>
-      <div class="task-arrow">→</div>
-      <div class="task-timer" id="timer-4"></div>
-    </div>
-
-    <div class="task-item" id="task-5" onclick="openCloudflare()">
-      <div class="task-icon">🤖</div>
-      <div class="task-info">
-        <div class="task-title">Confirm you are Human</div>
-        <div class="task-desc" id="task5-desc">Complete a quick verification</div>
-      </div>
-      <div class="task-arrow">→</div>
-    </div>
-  </div>
-
-  <button class="btn" id="claimBtn" onclick="claimReward()" disabled>🔒 Claim Reward</button>
-
-  <div class="key-box" id="keyBox">
-    <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--green);">Your Key</div>
-    <div class="key-text" id="keyDisplay">XYLO-XXXX-XXXX-XXXX</div>
-    <button class="btn btn-green" style="padding: 12px; font-size: 13px; margin-top: 10px;" onclick="copyKey()">Copy Key</button>
-    <div class="timer" id="timerDisplay">Expires in 5h 00m 00s</div>
-  </div>
-</div>
-
-<!-- WARNING MODAL -->
-<div class="modal-overlay" id="warningModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeWarning()">×</button>
-    <div class="modal-icon" id="modalIcon">⚠️</div>
-    <h3 id="modalTitle">Action not completed</h3>
-    <p id="modalMessage">Please complete the action to unlock your reward.</p>
-    <button class="btn" onclick="closeWarning()">Understood</button>
-  </div>
-</div>
-
-<!-- CLOUDFLARE MODAL -->
-<div class="modal-overlay" id="cfModal">
-  <div class="modal">
-    <h3 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 5px;">Confirm you are human</h3>
-    <p style="font-size: 13px; color: #a1a1aa; margin-bottom: 20px;">Complete the quick check below, then press Continue.</p>
-
-    <div class="cf-box">
-      <div class="cf-left">
-        <div class="cf-checkbox">
-          <div class="cf-spinner" id="cfSpinner"></div>
-          <div class="cf-checkmark" id="cfCheckmark">✔</div>
-        </div>
-        <div class="cf-text" id="cfText">Verifying...</div>
-      </div>
-      <div class="cf-right">
-        <div class="cf-logo"><svg viewBox="0 0 24 24" width="24" height="24" fill="#f38020"><path d="M12.1 3.2c-3.8 0-6.9 2.8-7.3 6.5-.3 2.4 1 4.7 3 5.8v-1.2c-1.4-1-2.3-2.7-2.1-4.5.2-2.7 2.4-4.8 5.1-4.8 2.7 0 4.9 2.1 5.1 4.8.2 1.8-.7 3.5-2.1 4.5v1.2c2-1.1 3.3-3.4 3-5.8-.4-3.7-3.5-6.5-7.3-6.5z"/><path d="M12.1 6.3c-1.8 0-3.3 1.3-3.6 3-.2 1.3.5 2.6 1.6 3.3V11c-.6-.5-1-1.2-.9-2 .1-1.2 1.2-2.2 2.5-2.2 1.3 0 2.4 1 2.5 2.2.1.8-.3 1.5-.9 2v1.6c1.1-.7 1.8-2 1.6-3.3-.3-1.7-1.8-3-3.6-3z"/></svg></div>
-        <div class="cf-links"><a href="#">Privacy</a> · <a href="#">Help</a></div>
-      </div>
-    </div>
-
-    <button class="btn" id="cfBtn" onclick="cfContinue()" disabled>Continue</button>
-  </div>
-</div>
-
 <script>
   let tasksDone = { 1: false, 2: false, 3: false, 4: false, 5: false };
   let currentKey = "";
   let expiryTime = 0;
-  let taskStartTime = { 1: 0, 2: 0, 3: 0, 4: 0 };
-  let taskCheckIntervals = { 1: null, 2: null, 3: null, 4: null };
+  
+  // I-load ang progress mula sa sessionStorage para hindi mawala pag nag-refresh
+  let savedProgress = JSON.parse(sessionStorage.getItem('xylo_progress') || '{}');
+  let taskStartTime = savedProgress.tasks || { 1: 0, 2: 0, 3: 0, 4: 0 };
+  let tasksDoneSaved = savedProgress.done || { 1: false, 2: false, 3: false, 4: false, 5: false };
+  
+  // Pagsamahin ang saved tasksDone
+  for(let i=1; i<=5; i++) {
+    if (tasksDoneSaved[i]) tasksDone[i] = true;
+  }
 
   let keysDB = JSON.parse(localStorage.getItem('xylo_keys_final') || '[]');
   function saveDB() { localStorage.setItem('xylo_keys_final', JSON.stringify(keysDB)); }
+
+  function saveProgress() {
+    sessionStorage.setItem('xylo_progress', JSON.stringify({ tasks: taskStartTime, done: tasksDone }));
+  }
 
   function updateUI() {
     let count = 0;
@@ -243,6 +26,10 @@
       const el = document.getElementById('task-' + i);
       if (tasksDone[i]) {
         el.classList.add('completed');
+        el.classList.remove('cooldown');
+        const timerTxt = document.getElementById('timer-' + i);
+        if (timerTxt) timerTxt.style.display = 'none';
+        
         if (i !== 5) el.querySelector('.task-desc').innerText = "Completed ✓";
         else document.getElementById('task5-desc').innerText = "Verified ✓";
         count++;
@@ -258,65 +45,96 @@
     }
   }
 
-  // START TASK LOGIC - Kailangan talaga hintayin matapos ang timer
+  // START TASK LOGIC - Pure Timer, no warning
   function startTask(id, link, duration) {
-    // Kung tapos na or may tumatakbo pang timer, wag pindutin
-    if (tasksDone[id] || taskCheckIntervals[id]) return; 
+    if (tasksDone[id]) return; 
     
-    // I-open ang link sa bagong tab
+    // Kung may tumatakbo nang timer para dito, huwag nang i-restart
+    if (taskStartTime[id] > 0 && (Date.now() - taskStartTime[id]) < (duration * 1000)) {
+      // Naka-open na yung tab, babalik na lang siya
+      return;
+    }
+
     window.open(link, '_blank');
     
     const el = document.getElementById('task-' + id);
     const desc = el.querySelector('.task-desc');
     const timerTxt = document.getElementById('timer-' + id);
     
-    // I-save ang oras kung kailan nag-start
+    // I-save ang start time
     taskStartTime[id] = Date.now();
+    saveProgress();
     
     el.classList.add('cooldown');
     desc.innerText = "Complete the task...";
     timerTxt.style.display = 'block';
-    timerTxt.innerText = duration + "s";
     
-    // Countdown timer display (para makita nila kung babalik sila)
-    let remainingDisplay = duration;
-    const countdownInterval = setInterval(() => {
-      remainingDisplay--;
-      if (remainingDisplay > 0) {
-        timerTxt.innerText = remainingDisplay + "s";
-      } else {
-        timerTxt.innerText = "Ready!";
-      }
-    }, 1000);
+    // I-start ang countdown
+    runCountdown(id, duration);
+  }
 
-    // Mag-hintay hanggang bumalik ang user sa website
-    taskCheckIntervals[id] = setInterval(() => {
-      if (document.hasFocus()) {
-        clearInterval(taskCheckIntervals[id]);
-        clearInterval(countdownInterval);
-        taskCheckIntervals[id] = null;
-        
-        let timeSpent = Math.floor((Date.now() - taskStartTime[id]) / 1000);
+  function runCountdown(id, duration) {
+    const el = document.getElementById('task-' + id);
+    const desc = el.querySelector('.task-desc');
+    const timerTxt = document.getElementById('timer-' + id);
+    
+    if (tasksDone[id]) return;
+
+    el.classList.add('cooldown');
+    timerTxt.style.display = 'block';
+    
+    const updateTimer = () => {
+      let timeSpent = Math.floor((Date.now() - taskStartTime[id]) / 1000);
+      let timeLeft = duration - timeSpent;
+
+      if (timeLeft <= 0) {
+        // Tapos na ang timer!
+        clearInterval(timerInterval);
+        tasksDone[id] = true;
+        saveProgress();
         
         el.classList.remove('cooldown');
         timerTxt.style.display = 'none';
-        desc.innerText = "Like, Repost, and Comment 'W'";
         
-        // LOGIC: Kailangan umabot sa required duration
-        if (timeSpent >= duration) {
-          // Umabot sa required time = Success
-          tasksDone[id] = true;
-          updateUI();
-          showWarning("✅", "Task Verified!", "Great job! You can now proceed to the next task.");
-        } 
-        else {
-          // Kulang ang oras = Warning, kailangan ulitin
-          let remaining = duration - timeSpent;
-          showWarning("⚠️", "Action not completed", "You came back too fast! Please go to TikTok, do the task, and stay there for at least " + remaining + " more seconds before coming back.");
+        updateUI();
+        
+        // WALANG WARNING, mag-didisplay lang ng success modal para sa confirmation
+        showWarning("✅", "Task Completed!", "Great job! You can now proceed to the next task.");
+        return;
+      }
+
+      timerTxt.innerText = timeLeft + "s";
+      desc.innerText = "Please wait " + timeLeft + "s...";
+    };
+
+    updateTimer(); // I-run agad
+    const timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  // Pagbalik sa page, i-check kung may mga existing timers na tumatakbo
+  window.addEventListener('load', () => {
+    for (let i = 1; i <= 4; i++) {
+      if (tasksDone[i]) continue;
+      if (taskStartTime[i] > 0) {
+        let duration = 0;
+        if (i === 1) duration = 50;
+        if (i === 2) duration = 40;
+        if (i === 3) duration = 30;
+        if (i === 4) duration = 30;
+
+        let timeSpent = Math.floor((Date.now() - taskStartTime[i]) / 1000);
+        if (timeSpent < duration) {
+          // I-resume yung countdown
+          runCountdown(i, duration);
+        } else {
+          // Tapos na pala habang wala siya
+          tasksDone[i] = true;
+          saveProgress();
         }
       }
-    }, 500);
-  }
+    }
+    updateUI();
+  });
 
   function openCloudflare() {
     if (tasksDone[5]) return;
@@ -341,6 +159,7 @@
   function cfContinue() {
     document.getElementById('cfModal').classList.remove('active');
     tasksDone[5] = true;
+    saveProgress();
     updateUI();
     showWarning("✅", "Human Verified!", "Thank you for confirming you are human.");
   }
@@ -397,5 +216,3 @@
   }
   function closeWarning() { document.getElementById('warningModal').classList.remove('active'); }
 </script>
-</body>
-</html>
