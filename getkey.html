@@ -128,7 +128,8 @@
   </div>
 
   <div class="task-list">
-    <div class="task-item" id="task-1" onclick="startTask(1, 'https://www.tiktok.com/@xylo_xi', 30)">
+    <!-- 50 SECONDS -->
+    <div class="task-item" id="task-1" onclick="startTask(1, 'https://www.tiktok.com/@xylo_xi', 50)">
       <div class="task-icon">👤</div>
       <div class="task-info">
         <div class="task-title">Follow on TikTok</div>
@@ -138,6 +139,7 @@
       <div class="task-timer" id="timer-1"></div>
     </div>
 
+    <!-- 40 SECONDS -->
     <div class="task-item" id="task-2" onclick="startTask(2, 'https://vt.tiktok.com/ZSgxPaXwo/', 40)">
       <div class="task-icon">❤️</div>
       <div class="task-info">
@@ -148,6 +150,7 @@
       <div class="task-timer" id="timer-2"></div>
     </div>
 
+    <!-- 30 SECONDS -->
     <div class="task-item" id="task-3" onclick="startTask(3, 'https://vt.tiktok.com/ZSgxPm389/', 30)">
       <div class="task-icon">📢</div>
       <div class="task-info">
@@ -158,6 +161,7 @@
       <div class="task-timer" id="timer-3"></div>
     </div>
 
+    <!-- 30 SECONDS -->
     <div class="task-item" id="task-4" onclick="startTask(4, 'https://discord.gg/xgKKRfuMf', 30)">
       <div class="task-icon">💬</div>
       <div class="task-info">
@@ -256,6 +260,7 @@
   function startTask(id, link, duration) {
     if (tasksDone[id] || taskTimers[id]) return; 
     
+    // Buksan yung link sa bagong tab/window
     window.open(link, '_blank');
     
     let timeLeft = duration;
@@ -268,7 +273,21 @@
     timerTxt.style.display = 'block';
     timerTxt.innerText = timeLeft + "s";
     
+    // --- STRICT FOCUS CHECK ---
     taskTimers[id] = setInterval(() => {
+      // Kapag bumalik siya sa website (nakafocus), i-cancel yung timer
+      if (document.hasFocus()) {
+        clearInterval(taskTimers[id]);
+        taskTimers[id] = null;
+        
+        el.classList.remove('cooldown');
+        timerTxt.style.display = 'none';
+        desc.innerText = "Like, Repost, and Comment 'W'";
+        
+        showWarning("⚠️", "Action not completed", "You came back too fast! Please go to TikTok, do the task, and stay there for " + duration + " seconds.");
+        return;
+      }
+
       timeLeft--;
       timerTxt.innerText = timeLeft + "s";
       
