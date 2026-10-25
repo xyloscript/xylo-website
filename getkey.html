@@ -229,9 +229,9 @@
 
 <script>
   let tasksDone = { 1: false, 2: false, 3: false, 4: false, 5: false };
-  let taskTimers = { 1: null, 2: null, 3: null, 4: null };
   let currentKey = "";
   let expiryTime = 0;
+  let taskStartTime = { 1: 0, 2: 0, 3: 0, 4: 0 };
 
   let keysDB = JSON.parse(localStorage.getItem('xylo_keys_final') || '[]');
   function saveDB() { localStorage.setItem('xylo_keys_final', JSON.stringify(keysDB)); }
@@ -257,52 +257,56 @@
     }
   }
 
+  // BAGONG START TASK LOGIC (Fix sa bug)
   function startTask(id, link, duration) {
-    if (tasksDone[id] || taskTimers[id]) return; 
+    if (tasksDone[id]) return; 
     
-    // Buksan yung link sa bagong tab/window
+    // I-open ang link sa bagong tab
     window.open(link, '_blank');
     
-    let timeLeft = duration;
     const el = document.getElementById('task-' + id);
     const desc = el.querySelector('.task-desc');
     const timerTxt = document.getElementById('timer-' + id);
     
+    // I-save ang oras kung kailan nag-start
+    taskStartTime[id] = Date.now();
+    
     el.classList.add('cooldown');
     desc.innerText = "Complete the task...";
     timerTxt.style.display = 'block';
-    timerTxt.innerText = timeLeft + "s";
+    timerTxt.innerText = duration + "s";
     
-    // --- STRICT FOCUS CHECK ---
-    taskTimers[id] = setInterval(() => {
-      // Kapag bumalik siya sa website (nakafocus), i-cancel yung timer
+    // Mag-hintay hanggang bumalik ang user sa website
+    const checkReturn = setInterval(() => {
       if (document.hasFocus()) {
-        clearInterval(taskTimers[id]);
-        taskTimers[id] = null;
+        clearInterval(checkReturn);
+        
+        let timeSpent = Math.floor((Date.now() - taskStartTime[id]) / 1000);
         
         el.classList.remove('cooldown');
         timerTxt.style.display = 'none';
         desc.innerText = "Like, Repost, and Comment 'W'";
         
-        showWarning("⚠️", "Action not completed", "You came back too fast! Please go to TikTok, do the task, and stay there for " + duration + " seconds.");
-        return;
-      }
-
-      timeLeft--;
-      timerTxt.innerText = timeLeft + "s";
-      
-      if (timeLeft <= 0) {
-        clearInterval(taskTimers[id]);
-        taskTimers[id] = null;
+        // LOGIC:
+        // 1. Bumalik agad ng < 8 seconds = I-consider na tapos na (bypass)
+        // 2. Umabot sa required duration = Success
+        // 3. Kulang sa duration pero lumagpas ng 8s = Warning
         
-        el.classList.remove('cooldown');
-        timerTxt.style.display = 'none';
-        
-        tasksDone[id] = true;
-        updateUI();
-        showWarning("✅", "Task Verified!", "Great job! You can now proceed to the next task.");
+        if (timeSpent < 8) {
+          tasksDone[id] = true;
+          updateUI();
+          showWarning("✅", "Verified!", "Task completed successfully!");
+        } 
+        else if (timeSpent >= duration) {
+          tasksDone[id] = true;
+          updateUI();
+          showWarning("✅", "Task Verified!", "Great job! You can now proceed to the next task.");
+        } 
+        else {
+          showWarning("⚠️", "Action not completed", "You came back too fast! Please go to TikTok, do the task, and stay there for at least " + (duration - timeSpent) + " more seconds.");
+        }
       }
-    }, 1000);
+    }, 500);
   }
 
   function openCloudflare() {
@@ -375,6 +379,7 @@
   }
 
   function copyKey() { navigator.clipboard.writeText(currentKey).then(() => alert("Key Copied!")); }
+  
   function showWarning(icon, title, msg) {
     document.getElementById('modalIcon').innerText = icon;
     document.getElementById('modalTitle').innerText = title;
