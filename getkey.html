@@ -100,8 +100,18 @@
     <h3>Choose Gateway</h3>
     <p>Select a verification provider to continue</p>
 
+    <div class="gateway-item" onclick="goToLink('workink')">
+      <div class="gateway-name">Work.ink</div>
+      <div class="gateway-desc">2 checkpoints</div>
+    </div>
+
     <div class="gateway-item" onclick="goToLink('linkvertise')">
       <div class="gateway-name">Linkvertise</div>
+      <div class="gateway-desc">2 checkpoints</div>
+    </div>
+
+    <div class="gateway-item" onclick="goToLink('lootlabs')">
+      <div class="gateway-name">LootLab</div>
       <div class="gateway-desc">2 checkpoints</div>
     </div>
 
@@ -116,24 +126,25 @@
   const FB_URL = "https://xylo-hub-default-rtdb.firebaseio.com";
 
   // ==========================================
-  // TOTOONG LINKVERTISE LINK MO
+  // TOTOONG LINKS MO
   // ==========================================
   const LINKS = {
-    linkvertise: "https://link-center.net/10374345/J7CgllXQEo2d"
+    workink: "https://work.ink/37kG/system-patch-notes-v118",
+    linkvertise: "https://link-center.net/10374345/J7CgllXQEo2d",
+    lootlabs: "https://lootdest.org/s?Y0ebLnek"
   };
 
   // ANTI-BYPASS LOGIC
   const urlParams = new URLSearchParams(window.location.search);
   const isVerified = urlParams.get('verified');
 
-  // Kung galing sa Linkvertise, generate agad
   if (isVerified === 'true') {
     document.getElementById('normalView').style.display = 'none';
     document.getElementById('subtitleText').innerText = "Verification Complete! Generating your key...";
     generateKey();
   }
 
-  // Anti-tamper: I-disable yung right click at devtools shortcuts (Optional)
+  // Anti-tamper: I-disable yung right click at devtools shortcuts
   document.addEventListener('contextmenu', event => event.preventDefault());
   document.onkeydown = function(e) {
     if (e.keyCode == 123) return false; // F12
