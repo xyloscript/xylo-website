@@ -105,11 +105,6 @@
       <div class="gateway-desc">2 checkpoints</div>
     </div>
 
-    <div class="gateway-item" onclick="goToLink('lootlabs')">
-      <div class="gateway-name">LootLab</div>
-      <div class="gateway-desc">3 checkpoints</div>
-    </div>
-
     <button class="btn cancel-btn" onclick="closeGateway()">Cancel</button>
   </div>
 </div>
@@ -121,21 +116,31 @@
   const FB_URL = "https://xylo-hub-default-rtdb.firebaseio.com";
 
   // ==========================================
-  // TOTOONG LINKS MO
+  // TOTOONG LINKVERTISE LINK MO
   // ==========================================
   const LINKS = {
-    linkvertise: "https://link-center.net/10374345/J7CgllXQEo2d",
-    lootlabs: "https://loot-link.com/s?chf7tVAL"
+    linkvertise: "https://link-center.net/10374345/J7CgllXQEo2d"
   };
 
-  // Check kung galing sa Linkvertise/Lootlabs (dahil sa ?verified=true sa dulo)
+  // ANTI-BYPASS LOGIC
   const urlParams = new URLSearchParams(window.location.search);
   const isVerified = urlParams.get('verified');
 
+  // Kung galing sa Linkvertise, generate agad
   if (isVerified === 'true') {
     document.getElementById('normalView').style.display = 'none';
     document.getElementById('subtitleText').innerText = "Verification Complete! Generating your key...";
     generateKey();
+  }
+
+  // Anti-tamper: I-disable yung right click at devtools shortcuts (Optional)
+  document.addEventListener('contextmenu', event => event.preventDefault());
+  document.onkeydown = function(e) {
+    if (e.keyCode == 123) return false; // F12
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
+    if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
   }
 
   function openGateway() { document.getElementById('gatewayModal').classList.add('active'); }
