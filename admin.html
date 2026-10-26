@@ -56,6 +56,7 @@
   .input:focus{border-color:var(--acc)}
   .form-label{font-size:12px;font-weight:600;color:var(--fg2)}
   .muted{color:var(--fg3);font-size:12px}
+  select.input{ cursor:pointer; }
 </style>
 </head>
 <body>
@@ -93,18 +94,26 @@
       </div>
     </div>
     <div class="page" id="page-keys">
-      <div class="header"><div class="title">Key Manager</div><button class="btn btn-primary" onclick="openModal('modal-key')">+ Create Key</button></div>
+      <div class="header">
+        <div class="title">Key Manager</div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <select id="admin-filter" class="input" style="margin:0;width:180px" onchange="renderKeys()">
+            <option value="all">All Admins</option>
+          </select>
+          <button class="btn btn-primary" onclick="openModal('modal-key')">+ Create Key</button>
+        </div>
+      </div>
       <div class="table-wrap"><table><thead><tr><th>Key</th><th>HWID</th><th>Expires</th><th>Created By</th><th>Status</th><th>Actions</th></tr></thead><tbody id="keys-body"></tbody></table></div>
     </div>
     <div class="page" id="page-admins">
       <div class="header"><div class="title">Admins</div><button class="btn btn-primary" onclick="openModal('modal-admin')">+ Add Admin</button></div>
-      <div class="table-wrap"><table><thead><tr><th>Username</th><th>Created</th><th>Actions</th></tr></thead><tbody id="admins-body"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Username</th><th>Keys Created</th><th>Created</th><th>Actions</th></tr></thead><tbody id="admins-body"></tbody></table></div>
     </div>
     <div class="page" id="page-settings">
       <div class="header"><div class="title">Settings</div></div>
       <div class="card" style="padding:20px;max-width:520px">
         <div class="form-label">Firebase Database URL</div>
-        <input class="input" type="text" id="fb-url" placeholder="https://xylo-xxxxx-default-rtdb.firebaseio.com">
+        <input class="input" type="text" id="fb-url" placeholder="https://xylo-hub-default-rtdb.firebaseio.com">
         <button class="btn btn-primary" onclick="saveFbUrl()">Save</button>
         <div class="muted" style="margin-top:10px">URL mula sa Firebase → Realtime Database. Parehong URL sa loader.lua.</div>
       </div>
@@ -141,18 +150,16 @@
   </div>
 </div>
 <script>
-let FB_URL = localStorage.getItem('xylo_fb_url') || 'PASTE_FIREBASE_URL_HERE';
+let FB_URL = localStorage.getItem('xylo_fb_url') || 'https://xylo-hub-default-rtdb.firebaseio.com';
 let CURRENT_ADMIN = null, isSetupMode = false, keysCache = {}, adminsCache = {};
+
 function fb(path, method, body){
-  if(!FB_URL || FB_URL.indexOf('PASTE_')===0) return Promise.reject('No Firebase URL');
+  if(!FB_URL) return Promise.reject('No Firebase URL');
   const url = FB_URL.replace(/\/$/,'') + path + '.json';
   return fetch(url,{method:method||'GET',headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(r=>r.json());
 }
+
 async function checkAuth(){
-  if(!FB_URL || FB_URL.indexOf('PASTE_')===0){
-    const v = prompt('Firebase Database URL:');
-    if(v){ FB_URL = v; localStorage.setItem('xylo_fb_url', v); }
-  }
   const loginScreen=document.getElementById('login-screen'), app=document.getElementById('app');
   loginScreen.style.display='flex'; app.style.display='none';
   try{ adminsCache = (await fb('/admins')) || {}; }catch(e){ adminsCache={}; }
@@ -162,6 +169,7 @@ async function checkAuth(){
   document.getElementById('login-btn').innerText = isSetupMode?'Create First Admin':'Login';
   document.getElementById('login-sub').innerText = isSetupMode?'Create First Admin':'Admin Authentication';
 }
+
 async function handleLogin(){
   const user=document.getElementById('login-user').value.trim().toLowerCase();
   const pass=document.getElementById('login-pass').value;
@@ -181,6 +189,7 @@ async function handleLogin(){
   document.getElementById('whoami').innerText='Logged in as: '+user;
   loadAll();
 }
+
 function logout(){
   if(!confirm('Logout?')) return;
   CURRENT_ADMIN=null; localStorage.removeItem('xylo_admin_session');
@@ -189,23 +198,28 @@ function logout(){
   document.getElementById('login-user').value=''; document.getElementById('login-pass').value='';
   checkAuth();
 }
+
 async function loadAll(){
   keysCache = (await fb('/keys')) || {};
   adminsCache = (await fb('/admins')) || {};
+  populateAdminFilter();
   renderKeys(); renderAdmins(); updateStats();
 }
+
 function nav(page,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   if(el) el.classList.add('active');
 }
+
 function updateStats(){
   const arr=Object.values(keysCache);
   document.getElementById('stat-total').textContent=arr.length;
   document.getElementById('stat-active').textContent=arr.filter(k=>!k.revoked && !isExpired(k.expiry)).length;
   document.getElementById('stat-revoked').textContent=arr.filter(k=>k.revoked).length;
 }
+
 function isExpired(exp){ return exp && new Date(exp).getTime() < Date.now(); }
 function expiryText(exp){
   if(!exp) return 'Lifetime';
@@ -221,27 +235,44 @@ function statusBadge(k){
   if(isExpired(k.expiry)) return '<span class="badge badge-exp">Expired</span>';
   return '<span class="badge">Active</span>';
 }
+
+function populateAdminFilter(){
+  const sel = document.getElementById('admin-filter');
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="all">All Admins</option>';
+  Object.keys(adminsCache).forEach(a => {
+    sel.innerHTML += `<option value="${a}">${a}</option>`;
+  });
+  if(currentVal && currentVal !== 'all' && adminsCache[currentVal]) sel.value = currentVal;
+}
+
 function renderKeys(){
+  const filter = document.getElementById('admin-filter').value;
   const tbody=document.getElementById('keys-body'), dash=document.getElementById('dash-keys-body');
-  const arr=Object.entries(keysCache);
-  if(!arr.length){
-    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--fg3)">No keys yet.</td></tr>';
-    dash.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--fg3)">No keys yet.</td></tr>';
-    return;
+  
+  let arr=Object.entries(keysCache);
+  if(filter !== 'all') {
+    arr = arr.filter(([id,k]) => k.createdBy === filter);
   }
-  tbody.innerHTML=arr.map(([id,k])=>`
-    <tr>
-      <td class="key" onclick="copyText('${k.key}')">${k.key}</td>
-      <td style="font-family:var(--font-mono);font-size:12px">${k.hwid||'Not Used'}</td>
-      <td style="font-size:12px;color:var(--fg2)">${expiryText(k.expiry)}</td>
-      <td style="font-size:12px;color:var(--acc)">${k.createdBy||'?'}</td>
-      <td>${statusBadge(k)}</td>
-      <td>
-        <button class="btn btn-ghost btn-sm" onclick="resetHWID('${id}')" style="color:var(--yellow);border:1px solid var(--yellow);margin-right:5px">Reset HWID</button>
-        <button class="btn btn-danger btn-sm" onclick="revokeKey('${id}')">${k.revoked?'Delete':'Revoke'}</button>
-      </td>
-    </tr>`).join('');
-  const recent=arr.slice(-5).reverse();
+  
+  if(!arr.length){
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--fg3)">No keys found.</td></tr>';
+  } else {
+    tbody.innerHTML=arr.map(([id,k])=>`
+      <tr>
+        <td class="key" onclick="copyText('${k.key}')">${k.key}</td>
+        <td style="font-family:var(--font-mono);font-size:12px">${k.hwid||'Not Used'}</td>
+        <td style="font-size:12px;color:var(--fg2)">${expiryText(k.expiry)}</td>
+        <td style="font-size:12px;color:var(--acc)">${k.createdBy||'?'}</td>
+        <td>${statusBadge(k)}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="resetHWID('${id}')" style="color:var(--yellow);border:1px solid var(--yellow);margin-right:5px">Reset HWID</button>
+          <button class="btn btn-danger btn-sm" onclick="revokeKey('${id}')">${k.revoked?'Delete':'Revoke'}</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  const recent=Object.entries(keysCache).slice(-5).reverse();
   dash.innerHTML=recent.map(([id,k])=>`
     <tr>
       <td class="key">${k.key}</td>
@@ -250,22 +281,30 @@ function renderKeys(){
       <td>${statusBadge(k)}</td>
     </tr>`).join('');
 }
+
 function renderAdmins(){
   const tbody=document.getElementById('admins-body'), arr=Object.entries(adminsCache);
-  if(!arr.length){ tbody.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--fg3)">No admins.</td></tr>'; return; }
-  tbody.innerHTML=arr.map(([user,a])=>`
+  if(!arr.length){ tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--fg3)">No admins.</td></tr>'; return; }
+  
+  tbody.innerHTML=arr.map(([user,a])=>{
+    const keyCount = Object.values(keysCache).filter(k => k.createdBy === user).length;
+    return `
     <tr>
       <td style="font-weight:600">${user}</td>
+      <td><span class="badge">${keyCount} keys</span></td>
       <td style="font-size:12px;color:var(--fg2)">${a.createdAt?new Date(a.createdAt).toLocaleString():'—'}</td>
       <td><button class="btn btn-danger btn-sm" onclick="deleteAdmin('${user}')">Delete</button></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
+
 function genKey(){
   const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let k='XYLO-';
   for(let i=0;i<3;i++){ for(let j=0;j<4;j++) k+=chars[Math.floor(Math.random()*chars.length)]; if(i<2) k+='-'; }
   return k;
 }
+
 async function createKey(){
   const max=parseInt(document.getElementById('maxUses').value)||0;
   const dur=document.getElementById('expiryDuration').value;
@@ -279,6 +318,7 @@ async function createKey(){
   await fb('/keys/'+id,'PUT',rec);
   closeModal('modal-key'); await loadAll();
 }
+
 async function revokeKey(id){
   const k=keysCache[id]; if(!k) return;
   if(k.revoked){
@@ -290,11 +330,13 @@ async function revokeKey(id){
   }
   await loadAll();
 }
+
 async function resetHWID(id){
   const k=keysCache[id]; if(!k) return;
   k.hwid=null; k.uses=0; await fb('/keys/'+id,'PUT',k);
   await loadAll(); alert('HWID reset. Key can be used on another device.');
 }
+
 async function createAdmin(){
   const user=document.getElementById('new-admin-user').value.trim().toLowerCase();
   const pass=document.getElementById('new-admin-pass').value;
@@ -304,21 +346,24 @@ async function createAdmin(){
   document.getElementById('new-admin-user').value=''; document.getElementById('new-admin-pass').value='';
   await loadAll();
 }
+
 async function deleteAdmin(user){
   if(user===CURRENT_ADMIN) return alert("Can't delete yourself.");
   if(!confirm('Delete admin '+user+'?')) return;
   await fb('/admins/'+user,'DELETE'); await loadAll();
 }
+
 function saveFbUrl(){
   const v=document.getElementById('fb-url').value.trim();
   if(!v.startsWith('http')) return alert('Invalid URL');
   FB_URL=v; localStorage.setItem('xylo_fb_url',v); alert('Saved.'); checkAuth();
 }
+
 function openModal(id){ document.getElementById(id).classList.add('active'); }
 function closeModal(id){ document.getElementById(id).classList.remove('active'); }
 function copyText(t){ navigator.clipboard.writeText(t).then(()=>alert('Copied: '+t)); }
 function resetLogin(){ document.getElementById('login-confirm').style.display='none'; isSetupMode=false; document.getElementById('login-btn').innerText='Login'; }
-document.getElementById('fb-url').value = (FB_URL.indexOf('PASTE_')===0?'':FB_URL);
+document.getElementById('fb-url').value = FB_URL;
 checkAuth();
 </script>
 </body>
