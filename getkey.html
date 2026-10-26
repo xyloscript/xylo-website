@@ -3,234 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XYLO | Get Free Key</title>
+<title>XYLO | Get Key</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
   :root {
-    --bg: #030305; --bg2: rgba(15, 15, 20, 0.7); --border: rgba(255, 255, 255, 0.08);
-    --fg: #ffffff; --fg2: #a1a1aa; --blue: #3b82f6; --blue-hover: #2563eb;
-    --green: #22c55e; --purple: #8b5cf6; --discord: #5865F2;
-    --font-sans: 'Inter', sans-serif;
+    --bg: #0a0a0c; --card-bg: #121216; --border: #26262d;
+    --fg: #ffffff; --fg2: #8a8a93; --accent: #ffffff;
+    --font: 'Inter', sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { 
-    background-color: var(--bg); color: var(--fg); font-family: var(--font-sans); 
+    background-color: var(--bg); color: var(--fg); font-family: var(--font); 
     display: flex; align-items: center; justify-content: center; min-height: 100vh; 
-    background-image: 
-      radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
-    background-attachment: fixed; padding: 20px;
+    background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 20px 20px; padding: 20px;
   }
   
   .container { 
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; 
-    padding: 30px; width: 100%; max-width: 440px; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1); 
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    position: relative; overflow: hidden; 
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; 
+    padding: 40px 30px; width: 100%; max-width: 420px; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    text-align: center; position: relative;
   }
 
-  .container::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--blue), var(--purple), transparent);
-  }
+  .title { font-size: 32px; font-weight: 800; letter-spacing: 1px; margin-bottom: 10px; }
+  .subtitle { font-size: 13px; color: var(--fg2); margin-bottom: 30px; }
   
-  .header { text-align: center; margin-bottom: 25px; }
-  .header h2 { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
-  .header p { font-size: 13px; color: var(--fg2); }
-  .header .count { 
-    display: inline-block; color: var(--blue); font-weight: 700; font-size: 12px; margin-top: 10px; 
-    background: rgba(59, 130, 246, 0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(59, 130, 246, 0.2);
-  }
-
-  .task-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
-  .task-item { 
-    background: rgba(25, 25, 30, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); 
-    border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; 
-    justify-content: space-between; cursor: pointer; transition: all 0.2s ease; 
-  }
-  .task-item:hover { background: rgba(35, 35, 45, 0.8); border-color: rgba(255, 255, 255, 0.15); transform: translateY(-2px); }
-  .task-item.completed { border-color: rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05); cursor: default; }
-  .task-item.completed:hover { transform: none; }
-  .task-item.cooldown { opacity: 0.6; cursor: not-allowed; }
-  .task-item.cooldown:hover { transform: none; }
-  
-  .task-icon { 
-    width: 36px; height: 36px; background: rgba(59, 130, 246, 0.1); border-radius: 10px; 
-    display: flex; align-items: center; justify-content: center; color: var(--blue); margin-right: 14px; font-size: 18px;
-  }
-  .task-item.completed .task-icon { background: rgba(34, 197, 94, 0.1); color: var(--green); }
-  
-  .task-info { flex: 1; }
-  .task-title { font-size: 14px; font-weight: 700; text-transform: uppercase; }
-  .task-desc { font-size: 12px; color: var(--fg2); margin-top: 3px; }
-  .task-item.completed .task-desc { color: var(--green); font-weight: 500; }
-  
-  .task-arrow { color: var(--fg2); font-size: 18px; font-weight: bold; }
-  .task-item.completed .task-arrow { display: none; }
-  .task-timer { color: var(--blue); font-weight: 800; font-size: 14px; margin-left: 10px; display: none; }
-
   .btn { 
-    width: 100%; padding: 15px; background: var(--blue); color: #fff; border: none; 
-    border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; 
-    transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; 
+    width: 100%; padding: 14px; background: transparent; color: var(--fg); border: 1px solid var(--border); 
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; 
+    transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; 
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
-  .btn:hover { background: var(--blue-hover); transform: translateY(-2px); }
-  .btn:disabled { background: rgba(255, 255, 255, 0.05); color: #6b7280; cursor: not-allowed; transform: none; }
-  .btn-green { background: var(--green); color: #000; }
-  .btn-green:hover { background: #16a34a; }
+  .btn:hover { background: rgba(255,255,255,0.05); }
+  .btn-primary { background: #1a1a20; border-color: #333; }
+  
+  .links { margin-top: 25px; font-size: 12px; display: flex; flex-direction: column; gap: 15px; }
+  .links a { color: var(--fg2); text-decoration: none; transition: 0.2s; }
+  .links a:hover { color: var(--fg); }
 
+  /* MODAL STYLES */
   .modal-overlay { 
-    position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; 
-    align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(5px); 
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; 
+    align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); 
   }
   .modal-overlay.active { display: flex; }
   .modal { 
-    background: #0f1218; border: 1px solid var(--border); border-radius: 16px; 
-    padding: 30px; width: 100%; max-width: 380px; text-align: center; position: relative;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; 
+    padding: 30px; width: 100%; max-width: 420px; text-align: center;
   }
-  .modal-close { 
-    position: absolute; top: 15px; right: 15px; background: transparent; border: none; 
-    color: var(--fg2); font-size: 20px; cursor: pointer; 
-  }
-  .modal-icon { font-size: 40px; margin-bottom: 15px; }
-  .modal h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
-  .modal p { font-size: 13px; color: var(--fg2); margin-bottom: 25px; line-height: 1.6; }
+  .modal h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .modal p { font-size: 13px; color: var(--fg2); margin-bottom: 25px; }
   
-  .cf-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .cf-left { display: flex; align-items: center; gap: 12px; }
-  .cf-checkbox { width: 24px; height: 24px; border: 2px solid #c1c1c1; border-radius: 3px; display: flex; align-items: center; justify-content: center; position: relative; }
-  .cf-spinner { width: 20px; height: 20px; border: 2px solid #e0e0e0; border-top-color: #f38020; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .cf-checkmark { color: #22c55e; font-size: 18px; display: none; }
-  .cf-text { font-size: 14px; color: #232323; font-weight: 400; }
-  .cf-right { display: flex; flex-direction: column; align-items: flex-end; }
-  .cf-logo { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
-  .cf-links { font-size: 9px; color: #888; margin-top: 2px; }
-
-  .key-box { 
-    display: none; margin-top: 20px; padding: 20px; background: rgba(34, 197, 94, 0.08); 
-    border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; text-align: center; 
+  .gateway-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px; border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 10px; cursor: pointer; transition: 0.2s; background: transparent;
   }
-  .key-text { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--green); letter-spacing: 1.5px; margin: 10px 0; }
-  .timer { font-size: 12px; color: var(--fg2); margin-top: 12px; display: inline-block; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 20px; }
+  .gateway-item:hover { background: rgba(255,255,255,0.03); border-color: #444; }
+  .gateway-name { font-size: 14px; font-weight: 600; }
+  .gateway-desc { font-size: 12px; color: var(--fg2); }
+  .cancel-btn { margin-top: 15px; color: var(--fg2); }
+
+  /* KEY REVEAL */
+  .key-box { display: none; margin-top: 20px; }
+  .key-text { font-family: monospace; font-size: 24px; font-weight: 700; color: #fff; letter-spacing: 2px; margin: 15px 0; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="header">
-    <h2>Complete Tasks to Continue</h2>
-    <p>Unlock your 5-Hour Free Key</p>
-    <span class="count" id="taskCount">Completed 0 of 5</span>
-  </div>
+  <div class="title">GET KEY</div>
+  <div class="subtitle" id="subtitleText">Complete the verification to generate your access key.</div>
 
-  <div class="task-list">
-    <!-- 50 SECONDS -->
-    <div class="task-item" id="task-1" onclick="startTask(1, 'https://www.tiktok.com/@xylo_xi', 50)">
-      <div class="task-icon">👤</div>
-      <div class="task-info">
-        <div class="task-title">Follow on TikTok</div>
-        <div class="task-desc">Follow @xylo_xi on TikTok</div>
-      </div>
-      <div class="task-arrow">→</div>
-      <div class="task-timer" id="timer-1"></div>
-    </div>
-
-    <!-- 40 SECONDS -->
-    <div class="task-item" id="task-2" onclick="startTask(2, 'https://vt.tiktok.com/ZSgxPaXwo/', 40)">
-      <div class="task-icon">❤️</div>
-      <div class="task-info">
-        <div class="task-title">Like & Repost Video</div>
-        <div class="task-desc">Like, Repost, and Comment "W"</div>
-      </div>
-      <div class="task-arrow">→</div>
-      <div class="task-timer" id="timer-2"></div>
-    </div>
-
-    <!-- 30 SECONDS -->
-    <div class="task-item" id="task-3" onclick="startTask(3, 'https://vt.tiktok.com/ZSgxPm389/', 30)">
-      <div class="task-icon">📢</div>
-      <div class="task-info">
-        <div class="task-title">Like & Repost Video 2</div>
-        <div class="task-desc">Like, Repost, and Comment "W"</div>
-      </div>
-      <div class="task-arrow">→</div>
-      <div class="task-timer" id="timer-3"></div>
-    </div>
-
-    <!-- 30 SECONDS -->
-    <div class="task-item" id="task-4" onclick="startTask(4, 'https://discord.gg/xgKKRfuMf', 30)">
-      <div class="task-icon">💬</div>
-      <div class="task-info">
-        <div class="task-title">Join Our Discord</div>
-        <div class="task-desc">Join the server for updates & support</div>
-      </div>
-      <div class="task-arrow">→</div>
-      <div class="task-timer" id="timer-4"></div>
-    </div>
-
-    <div class="task-item" id="task-5" onclick="openCloudflare()">
-      <div class="task-icon">🤖</div>
-      <div class="task-info">
-        <div class="task-title">Confirm you are Human</div>
-        <div class="task-desc" id="task5-desc">Complete a quick verification</div>
-      </div>
-      <div class="task-arrow">→</div>
+  <!-- Normal View -->
+  <div id="normalView">
+    <button class="btn btn-primary" onclick="openGateway()">GENERATE KEY</button>
+    <div class="links">
+      <a href="#">Already have a key? → Dashboard</a>
+      <a href="#">Game Status →</a>
     </div>
   </div>
 
-  <button class="btn" id="claimBtn" onclick="claimReward()" disabled>🔒 Claim Reward</button>
-
+  <!-- Key Reveal Area -->
   <div class="key-box" id="keyBox">
-    <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--green);">Your Key</div>
+    <div class="subtitle" style="margin-bottom: 0;">Your Access Key:</div>
     <div class="key-text" id="keyDisplay">XYLO-XXXX-XXXX-XXXX</div>
-    <button class="btn btn-green" style="padding: 12px; font-size: 13px; margin-top: 10px;" onclick="copyKey()">Copy Key</button>
-    <div class="timer" id="timerDisplay">Expires in 5h 00m 00s</div>
+    <button class="btn" style="background:#fff; color:#000; border:none;" onclick="copyKey()">Copy Key</button>
   </div>
 </div>
 
-<!-- WARNING MODAL -->
-<div class="modal-overlay" id="warningModal">
+<!-- GATEWAY MODAL -->
+<div class="modal-overlay" id="gatewayModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeWarning()">×</button>
-    <div class="modal-icon" id="modalIcon">⚠️</div>
-    <h3 id="modalTitle">Action not completed</h3>
-    <p id="modalMessage">Please complete the action to unlock your reward.</p>
-    <button class="btn" onclick="closeWarning()">Understood</button>
-  </div>
-</div>
+    <h3>Choose Gateway</h3>
+    <p>Select a verification provider to continue</p>
 
-<!-- CLOUDFLARE MODAL -->
-<div class="modal-overlay" id="cfModal">
-  <div class="modal">
-    <h3 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 5px;">Confirm you are human</h3>
-    <p style="font-size: 13px; color: #a1a1aa; margin-bottom: 20px;">Complete the quick check below, then press Continue.</p>
-
-    <div class="cf-box">
-      <div class="cf-left">
-        <div class="cf-checkbox">
-          <div class="cf-spinner" id="cfSpinner"></div>
-          <div class="cf-checkmark" id="cfCheckmark">✔</div>
-        </div>
-        <div class="cf-text" id="cfText">Verifying...</div>
-      </div>
-      <div class="cf-right">
-        <div class="cf-logo"><svg viewBox="0 0 24 24" width="24" height="24" fill="#f38020"><path d="M12.1 3.2c-3.8 0-6.9 2.8-7.3 6.5-.3 2.4 1 4.7 3 5.8v-1.2c-1.4-1-2.3-2.7-2.1-4.5.2-2.7 2.4-4.8 5.1-4.8 2.7 0 4.9 2.1 5.1 4.8.2 1.8-.7 3.5-2.1 4.5v1.2c2-1.1 3.3-3.4 3-5.8-.4-3.7-3.5-6.5-7.3-6.5z"/><path d="M12.1 6.3c-1.8 0-3.3 1.3-3.6 3-.2 1.3.5 2.6 1.6 3.3V11c-.6-.5-1-1.2-.9-2 .1-1.2 1.2-2.2 2.5-2.2 1.3 0 2.4 1 2.5 2.2.1.8-.3 1.5-.9 2v1.6c1.1-.7 1.8-2 1.6-3.3-.3-1.7-1.8-3-3.6-3z"/></svg></div>
-        <div class="cf-links"><a href="#">Privacy</a> · <a href="#">Help</a></div>
-      </div>
+    <div class="gateway-item" onclick="goToLink('workink')">
+      <div class="gateway-name">Work.ink</div>
+      <div class="gateway-desc">2 checkpoints</div>
     </div>
 
-    <button class="btn" id="cfBtn" onclick="cfContinue()" disabled>Continue</button>
+    <div class="gateway-item" onclick="goToLink('linkvertise')">
+      <div class="gateway-name">Linkvertise</div>
+      <div class="gateway-desc">2 checkpoints</div>
+    </div>
+
+    <div class="gateway-item" onclick="goToLink('lootlabs')">
+      <div class="gateway-name">LootLab</div>
+      <div class="gateway-desc">3 checkpoints</div>
+    </div>
+
+    <button class="btn cancel-btn" onclick="closeGateway()">Cancel</button>
   </div>
 </div>
 
 <script>
-const _0x1a2b=['xylo_progress','tasks','done','getItem','parse','stringify','setItem','completed','cooldown','timer-','task-','style','display','none','block','innerText','Completed\x20✓','task5-desc','Verified\x20✓','taskCount','Completed\x20','\x20of\x205','claimBtn','disabled','btn-green','🔓\x20Claim\x20Reward','startTask','date','_blank','desc','Please\x20wait\x20','s...','s','push','Task\x20Completed!','Great\x20job!\x20You\x20can\x20now\x20proceed\x20to\x20the\x20next\x20task.','focus','blur','timeAway','Action\x20not\x20completed','You\x20came\x20back\x20too\x20fast!\x20Please\x20go\x20to\x20TikTok,\x20do\x20the\x20task,\x20and\x20stay\x20there\x20for\x20at\x20least\x208\x20seconds.','Follow\x20@xylo_xi\x20on\x20TikTok','Like,\x20Repost,\x20and\x20Comment\x20\x27W\x27','Join\x20the\x20server\x20for\x20updates\x20&\x20support','load','cfModal','active','cfSpinner','cfCheckmark','cfText','Verifying...','#232323','cfBtn','Success!','#22c55e','remove','Human\x20Verified!','Thank\x20you\x20for\x20confirming\x20you\x20are\x20human.','keyDisplay','keyBox','claimBtn','timerDisplay','Expires\x20in\x20','h\x20','m\x20','EXPIRED','var(--acc)','clipboard','writeText','Key\x20Copied!','modalIcon','modalTitle','modalMessage','warningModal'];
-const _0x4c5d=function(_0x1a2b9a,_0x4c5d8b){_0x1a2b9a=_0x1a2b9a-0x0;let _0x51b53a=_0x1a2b[_0x1a2b9a];return _0x51b53a;};
-let tasksDone={1:!1,2:!1,3:!1,4:!1,5:!1},currentKey='',expiryTime=0,savedProgress=JSON['parse'](sessionStorage[_0x4c5d(0x3)]('xylo_progress')||'{}'),taskStartTime=savedProgress[_0x4c5d(0x4)]||{1:0,2:0,3:0,4:0},tasksDoneSaved=savedProgress[_0x4c5d(0x5)]||{1:!1,2:!1,3:!1,4:!1,5:!1};for(let i=0x1;i<=0x5;i++){if(tasksDoneSaved[i])tasksDone[i]=!0;}let activeTimers={1:null,2:null,3:null,4:null},windowBlurTime=0,currentActiveTask=0,keysDB=JSON[_0x4c5d(0x6)](localStorage[_0x4c5d(0x3)]('xylo_keys_final')||'[]');function saveDB(){localStorage['setItem']('xylo_keys_final',JSON['stringify'](keysDB));}function saveProgress(){sessionStorage[_0x4c5d(0x7)]('xylo_progress',JSON[_0x4c5d(0x6)]({tasks:taskStartTime,done:tasksDone}));}function updateUI(){const _0x2d9c=_0x4c5d;let _0x51b53a=0x0;for(let _0x4a2c9a=0x1;_0x4a2c9a<=0x5;_0x4a2c9a++){const _0x2c18e7=document['getElementById'](_0x2d9c(0x11)+_0x4a2c9a);if(tasksDone[_0x4a2c9a]){_0x2c18e7['classList']['add'](_0x2d9c(0xa));_0x2c18e7['classList']['remove'](_0x2d9c(0xb));const _0x1d4dd4=document['getElementById'](_0x2d9c(0xc)+_0x4a2c9a);if(_0x1d4dd4)_0x1d4dd4['style'][_0x2d9c(0xe)]=_0x2d9c(0xf);if(_0x4a2c9a!==0x5)_0x2c18e7['querySelector']('.task-desc')[_0x2d9c(0x10)]=_0x2d9c(0x12);else document['getElementById'](_0x2d9c(0x13))[_0x2d9c(0x10)]=_0x2d9c(0x14);_0x51b53a++;}}document['getElementById'](_0x2d9c(0x15))[_0x2d9c(0x10)]=_0x2d9c(0x16)+_0x51b53a+_0x2d9c(0x17);if(_0x51b53a===0x5){const _0x4771a9=document['getElementById'](_0x2d9c(0x18));_0x4771a9['disabled']=!1;_0x4771a9['classList']['add'](_0x2d9c(0x19));_0x4771a9['innerText']=_0x2d9c(0x1a);}}function startTask(_0x5e90a1,_0x2c18e7,_0x1d4dd4){const _0x4771a9=_0x4c5d;if(tasksDone[_0x5e90a1])return;if(activeTimers[_0x5e90a1])return;currentActiveTask=_0x5e90a1;windowBlurTime=Date['now']();window['open'](_0x2c18e7,_0x4771a9(0x1c));const _0x54b18f=document['getElementById'](_0x4771a9(0x11)+_0x5e90a1),_0x10cf40=_0x54b18f['querySelector']('.task-desc'),_0x24901e=document['getElementById'](_0x4771a9(0xc)+_0x5e90a1);taskStartTime[_0x5e90a1]=Date['now']();saveProgress();_0x54b18f['classList']['add'](_0x4771a9(0xb));_0x10cf40['innerText']=_0x4771a9(0x1d)+_0x1d4dd4+_0x4771a9(0x1e);_0x24901e['style'][_0x4771a9(0xe)]=_0x4771a9(0x10);_0x24901e['innerText']=_0x1d4dd4+_0x4771a9(0x1f);let _0x3bb20c=_0x1d4dd4;activeTimers[_0x5e90a1]=setInterval(()=>{const _0x2e3518=_0x4771a9;_0x3bb20c--;if(_0x3bb20c<=0x0){clearInterval(activeTimers[_0x5e90a1]);activeTimers[_0x5e90a1]=null;currentActiveTask=0x0;tasksDone[_0x5e90a1]=!0;saveProgress();_0x54b18f['classList']['remove'](_0x2e3518(0xb));_0x24901e['style'][_0x2e3518(0xe)]=_0x2e3518(0xf);_0x10cf40['innerText']=_0x2e3518(0x12);updateUI();showWarning('✅',_0x2e3518(0x20),_0x2e3518(0x21));return;}_0x24901e['innerText']=_0x3bb20c+_0x2e3518(0x1f);_0x10cf40['innerText']=_0x2e3518(0x1d)+_0x3bb20c+_0x2e3518(0x1e);},0x3e8);}window['addEventListener'](_0x4c5d(0x22),()=>{const _0x1bdce3=_0x4c5d;if(!windowBlurTime)return;let _0x2da25e=Math['floor']((Date['now']()-windowBlurTime)/0x3e8);windowBlurTime=0x0;if(_0x2da25e<0x8&&currentActiveTask!==0x0){let _0x217ad7=currentActiveTask;if(activeTimers[_0x217ad7]){clearInterval(activeTimers[_0x217ad7]);activeTimers[_0x217ad7]=null;}currentActiveTask=0x0;taskStartTime[_0x217ad7]=0x0;saveProgress();const _0x4a675f=document['getElementById'](_0x1bdce3(0x11)+_0x217ad7),_0x478114=_0x4a675f['querySelector']('.task-desc'),_0x359346=document['getElementById'](_0x1bdce3(0xc)+_0x217ad7);_0x4a675f['classList']['remove'](_0x1bdce3(0xb));_0x359346['style'][_0x1bdce3(0xe)]=_0x1bdce3(0xf);if(_0x217ad7===0x1)_0x478114['innerText']=_0x1bdce3(0x23);if(_0x217ad7===0x2)_0x478114['innerText']=_0x1bdce3(0x24);if(_0x217ad7===0x3)_0x478114['innerText']=_0x1bdce3(0x24);if(_0x217ad7===0x4)_0x478114['innerText']=_0x1bdce3(0x25);showWarning('⚠️',_0x1bdce3(0x26),_0x1bdce3(0x27));}});window['addEventListener'](_0x4c5d(0x23),()=>{windowBlurTime=Date['now']();});window['addEventListener'](_0x4c5d(0x26),()=>{const _0x3849f1=_0x4c5d;for(let _0x3107c9=0x1;_0x3107c9<=0x4;_0x3107c9++){if(tasksDone[_0x3107c9])continue;if(taskStartTime[_0x3107c9]>0x0){let _0x53eafb=0x0;if(_0x3107c9===0x1)_0x53eafb=0x32;if(_0x3107c9===0x2)_0x53eafb=0x28;if(_0x3107c9===0x3)_0x53eafb=0x1e;if(_0x3107c9===0x4)_0x53eafb=0x1e;let _0x28b59a=Math['floor']((Date['now']()-taskStartTime[_0x3107c9])/0x3e8),_0x3877b8=_0x53eafb-_0x28b59a;if(_0x3877b8>0x0){currentActiveTask=_0x3107c9;const _0x26fa47=document['getElementById'](_0x3849f1(0x11)+_0x3107c9),_0x3dde5a=_0x26fa47['querySelector']('.task-desc'),_0x333017=document['getElementById'](_0x3849f1(0xc)+_0x3107c9);_0x26fa47['classList']['add'](_0x3849f1(0xb));_0x333017['style'][_0x3849f1(0xe)]=_0x3849f1(0x10);_0x333017['innerText']=_0x3877b8+_0x3849f1(0x1f);_0x3dde5a['innerText']=_0x3849f1(0x1d)+_0x3877b8+_0x3849f1(0x1e);activeTimers[_0x3107c9]=setInterval(()=>{const _0x22d045=_0x3849f1;_0x3877b8--;if(_0x3877b8<=0x0){clearInterval(activeTimers[_0x3107c9]);activeTimers[_0x3107c9]=null;currentActiveTask=0x0;tasksDone[_0x3107c9]=!0;saveProgress();_0x26fa47['classList']['remove'](_0x22d045(0xb));_0x333017['style'][_0x22d045(0xe)]=_0x22d045(0xf);_0x3dde5a['innerText']=_0x22d045(0x12);updateUI();showWarning('✅',_0x22d045(0x20),_0x22d045(0x21));}else{_0x333017['innerText']=_0x3877b8+_0x22d045(0x1f);_0x3dde5a['innerText']=_0x22d045(0x1d)+_0x3877b8+_0x22d045(0x1e);}},0x3e8);}else{tasksDone[_0x3107c9]=!0;saveProgress();}}}updateUI();});function openCloudflare(){const _0x59ef9c=_0x4c5d;if(tasksDone[0x5])return;document['getElementById'](_0x59ef9c(0x28))['classList']['add'](_0x59ef9c(0x29));document['getElementById'](_0x59ef9c(0x2a))['style']['display']=_0x59ef9c(0x10);document['getElementById'](_0x59ef9c(0x2b))['style']['display']=_0x59ef9c(0xf);document['getElementById'](_0x59ef9c(0x2c))['innerText']=_0x59ef9c(0x2d);document['getElementById'](_0x59ef9c(0x2c))['style']['color']=_0x59ef9c(0x2e);document['getElementById'](_0x59ef9c(0x2f))['disabled']=!0;document['getElementById'](_0x59ef9c(0x2f))['classList']['remove'](_0x59ef9c(0x19));setTimeout(()=>{const _0x2fcfb9=_0x59ef9c;document['getElementById'](_0x2fcfb9(0x2a))['style']['display']=_0x2fcfb9(0xf);document['getElementById'](_0x2fcfb9(0x2b))['style']['display']=_0x2fcfb9(0x10);document['getElementById'](_0x2fcfb9(0x2c))['innerText']=_0x2fcfb9(0x30);document['getElementById'](_0x2fcfb9(0x2c))['style']['color']=_0x2fcfb9(0x31);document['getElementById'](_0x2fcfb9(0x2f))['disabled']=!1;document['getElementById'](_0x2fcfb9(0x2f))['classList']['add'](_0x2fcfb9(0x19));},0xbb8);}function cfContinue(){const _0x466da2=_0x4c5d;document['getElementById'](_0x466da2(0x28))['classList'][_0x466da2(0x32)](_0x466da2(0x29));tasksDone[0x5]=!0;saveProgress();updateUI();showWarning('✅',_0x466da2(0x33),_0x466da2(0x34));}function claimReward(){const _0x69de64=_0x4c5d;let _0x4449a3=0x0;for(let _0x4f36c7=0x1;_0x4f36c7<=0x5;_0x4f36c7++)if(tasksDone[_0x4f36c7])_0x4449a3++;if(_0x4449a3<0x5)return;currentKey=generateKey();expiryTime=new Date()['getTime']()+0x5*0x3c*0x3c*0x3e8;keysDB['push']({key:currentKey,hwid:'Not\x20Used',expiry:new Date(expiryTime)[_0x69de64(0x21)+'\x74\x6f\x49\x53\x4f\x53\x74\x72\x69\x6e\x67']()});saveDB();document['getElementById'](_0x69de64(0x35))['innerText']=currentKey;document['getElementById'](_0x69de64(0x36))['style']['display']=_0x69de64(0x10);document['getElementById'](_0x69de64(0x37))['style']['display']=_0x69de64(0xf);startTimer();}function generateKey(){const _0x2192d1=_0x4c5d,_0x343c65='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';let _0x2c3302='XYLO-';for(let _0x1812b4=0x0;_0x1812b4<0x3;_0x1812b4++){for(let _0x2674a9=0x0;_0x2674a9<0x4;_0x2674a9++)_0x2c3302+=_0x343c65[Math['floor'](Math['random']()*_0x343c65['length'])];if(_0x1812b4<0x2)_0x2c3302+='-';}return _0x2c3302;}function startTimer(){const _0x38cc65=_0x4c5d,_0x221a5e=document['getElementById'](_0x38cc65(0x38));setInterval(()=>{const _0x5df47a=_0x38cc65,_0x22c006=new Date()['getTime'](),_0x3f9a6e=expiryTime-_0x22c006;if(_0x3f9a6e<0x0){_0x221a5e['innerText']=_0x5df47a(0x39);_0x221a5e['style']['color']=_0x5df47a(0x3a);return;}const _0x2a7748=Math['floor']((_0x3f9a6e%(0x3e8*0x3c*0x3c*0x18))/(0x3e8*0x3c*0x3c)),_0x169dcd=Math['floor']((_0x3f9a6e%(0x3e8*0x3c*0x3c))/(0x3e8*0x3c)),_0x4d79e1=Math['floor']((_0x3f9a6e%(0x3e8*0x3c))/0x3e8);_0x221a5e['innerText']=_0x5df47a(0x3b)+_0x2a7748+_0x5df47a(0x3c)+_0x169dcd+_0x5df47a(0x3d)+_0x4d79e1+'s';},0x3e8);}function copyKey(){const _0x4a3e21=_0x4c5d;navigator[_0x4a3e21(0x3e)][_0x4a3e21(0x3f)](currentKey)['then'](()=>alert(_0x4a3e21(0x40)));}function showWarning(_0x5163f0,_0x568e93,_0x5b1b51){const _0x21c3c5=_0x4c5d;document['getElementById'](_0x21c3c5(0x41))['innerText']=_0x5163f0;document['getElementById'](_0x21c3c5(0x42))['innerText']=_0x568e93;document['getElementById'](_0x21c3c5(0x43))['innerText']=_0x5b1b51;document['getElementById'](_0x21c3c5(0x44))['classList']['add'](_0x21c3c5(0x29));}function closeWarning(){document['getElementById']('warningModal')['classList']['remove']('active');}
+  // ==========================================
+  // FIREBASE CONFIGURATION
+  // ==========================================
+  const FB_URL = "https://xylo-hub-default-rtdb.firebaseio.com";
+
+  // ==========================================
+  // TOTOONG LINKS MO
+  // ==========================================
+  const LINKS = {
+    workink: "https://work.ink/37kl/xylo-premium-script",
+    linkvertise: "https://link-hub.net/10374345/Qs4KaX5wIIdv",
+    lootlabs: "https://loot-link.com/s?chF7IVAL"
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const isVerified = urlParams.get('verified');
+
+  if (isVerified === 'true') {
+    document.getElementById('normalView').style.display = 'none';
+    document.getElementById('subtitleText').innerText = "Verification Complete! Generating your key...";
+    generateKey();
+  }
+
+  function openGateway() { document.getElementById('gatewayModal').classList.add('active'); }
+  function closeGateway() { document.getElementById('gatewayModal').classList.remove('active'); }
+
+  function goToLink(provider) {
+    closeGateway();
+    window.location.href = LINKS[provider]; 
+  }
+
+  function generateKey() {
+    setTimeout(() => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let key = 'XYLO-';
+      for(let i=0; i<3; i++) {
+        for(let j=0; j<4; j++) key += chars[Math.floor(Math.random()*chars.length)];
+        if(i<2) key += '-';
+      }
+      
+      const now = Date.now();
+      const expiryTime = now + (5 * 60 * 60 * 1000); // 5 Hours
+      const keyId = key.replace(/[^A-Z0-9]/g, '');
+
+      const keyData = {
+        key: key, hwid: null, uses: 0, maxUses: 1,
+        expiry: new Date(expiryTime).toISOString(),
+        revoked: false, createdBy: "FreeGenerator", createdAt: now
+      };
+
+      fetch(`${FB_URL}/keys/${keyId}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(keyData)
+      }).then(() => {
+        document.getElementById('keyBox').style.display = 'block';
+        document.getElementById('keyDisplay').innerText = key;
+        document.getElementById('subtitleText').innerText = "Your key is ready!";
+      }).catch((err) => {
+        alert("Connection failed. Please try again.");
+        window.location.href = "getkey.html"; 
+      });
+    }, 1500); 
+  }
+
+  function copyKey() {
+    const keyText = document.getElementById('keyDisplay').innerText;
+    navigator.clipboard.writeText(keyText).then(() => alert("Key Copied to clipboard!"));
+  }
 </script>
 </body>
 </html>
