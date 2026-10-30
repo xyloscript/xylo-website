@@ -354,7 +354,7 @@
     <div class="form-label">Expiration</div>
     <select id="expiryDuration" class="input">
       <option value="lifetime">Lifetime</option>
-      <option value="1h"><option value="1h">1 Hour</option><option value="1d">1 Day</option><option value="7d">7 Days</option><option value="30d">30 Days</option>
+      <option value="1h">1 Hour</option><option value="1d">1 Day</option<option value="1h">1 Hour</option><option value="1d">1 Day</option><option value="7d">7 Days</option><option value="30d">30 Days</option>
     </select>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px">
       <button class="btn btn-danger" onclick="closeModal('modal-key')">Cancel</button>
@@ -375,13 +375,19 @@
 
   // ==== FIREBASE ====
   async function fb(path, method='GET', body=null) {
-    const url = FIREBASE_URL.replace(/\/$/,'') + path + '.json';
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: body ? JSON.stringify(body) : undefined
-    });
-    return res.json();
+    try {
+      const url = FIREBASE_URL.replace(/\/$/,'') + path + '.json';
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : undefined
+      });
+      if (!res.ok) throw new Error("Firebase Error");
+      return await res.json();
+    } catch(e) {
+      console.error("FB Error:", e);
+      return null; // I-return ang null para hindi mag-crash ang system
+    }
   }
 
   // ==== NAVIGATION ====
@@ -433,17 +439,16 @@
     const expiry = new Date(Date.now() + 24*60*60*1000).toISOString();
     const id = key.replace(/[^A-Z0-9]/g,'');
 
-    try {
-      await fb('/keys/' + id, 'PUT', {
-        key: key, expiry: expiry, revoked: false, createdBy: "Free_Gen", createdAt: Date.now()
-      });
+    const success = await fb('/keys/' + id, 'PUT', {
+      key: key, expiry: expiry, revoked: false, createdBy: "Free_Gen", createdAt: Date.now()
+    });
 
+    if(success !== null) {
       document.getElementById('keyText').textContent = key;
       document.getElementById('expiry').textContent = new Date(expiry).toLocaleString();
       resultEl.classList.add('show');
-      
       startBtn.style.display = 'none';
-    } catch(e) {
+    } else {
       errorEl.textContent = "Connection error. Try again.";
       errorEl.classList.add('show');
       startBtn.disabled = false;
@@ -486,25 +491,23 @@
       err.textContent = "Passwords do not match."; err.classList.add('show'); return;
     }
 
-    try {
-      // Check if user exists
-      const existingUser = await fb('/users/' + user);
-      if(existingUser) {
-        err.textContent = "Username already taken."; err.classList.add('show'); return;
-      }
+    const existingUser = await fb('/users/' + user);
+    
+    // Fix logic: Kung nage-error sa connection (null), hayaan gumawa. Kung may data talaga, harangin.
+    if(existingUser) {
+      err.textContent = "Username already taken."; err.classList.add('show'); return;
+    }
 
-      // Create User in DB
-      await fb('/users/' + user, 'PUT', { password: pass, key: null, expiry: null });
-      
-      // Auto Login
+    const success = await fb('/users/' + user, 'PUT', { password: pass, key: null, expiry: null });
+    
+    if(success !== null) {
       CURRENT_USER = { username: user, key: null, expiry: null };
       localStorage.setItem('xylo_user', JSON.stringify(CURRENT_USER));
       updateUIUser();
       nav('dashboard');
       alert("Account created successfully!");
-      
-    } catch(e) {
-      err.textContent = "Connection error."; err.classList.add('show');
+    } else {
+      err.textContent = "Database connection failed. Check Firebase rules."; err.classList.add('show');
     }
   }
 
@@ -513,7 +516,6 @@
     const pass = document.getElementById('login-pass').value;
     const err = document.getElementById('auth-error');
 
-    // Secret Owner Login
     if(user === "owner" && pass === OWNER_SECRET_PASS) {
         localStorage.setItem('xylo_owner_auth', 'true');
         document.getElementById('auth-error').classList.remove('show');
@@ -526,19 +528,15 @@
       err.textContent = "Enter username and password."; err.classList.add('show'); return;
     }
 
-    try {
-      const userData = await fb('/users/' + user);
-      if(!userData || userData.password !== pass) {
-        err.textContent = "Incorrect username or password."; err.classList.add('show'); return;
-      }
-
-      CURRENT_USER = { username: user, key: userData.key, expiry: userData.expiry };
-      localStorage.setItem('xylo_user', JSON.stringify(CURRENT_USER));
-      updateUIUser();
-      nav('dashboard');
-    } catch(e) {
-      err.textContent = "Connection error."; err.classList.add('show');
+    const userData = await fb('/users/' + user);
+    if(!userData || userData.password !== pass) {
+      err.textContent = "Incorrect username or password."; err.classList.add('show'); return;
     }
+
+    CURRENT_USER = { username: user, key: userData.key, expiry: userData.expiry };
+    localStorage.setItem('xylo_user', JSON.stringify(CURRENT_USER));
+    updateUIUser();
+    nav('dashboard');
   }
 
   function updateUIUser() {
